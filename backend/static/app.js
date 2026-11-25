@@ -92,6 +92,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Quick Select Dropdown Handler
+    const scenarioDropdown = document.getElementById('scenario-dropdown');
+    if (scenarioDropdown) {
+        scenarioDropdown.addEventListener('change', (e) => {
+            const selectedPrompt = e.target.value;
+            if (selectedPrompt) {
+                promptInput.value = selectedPrompt;
+                promptInput.focus();
+                promptInput.scrollTop = promptInput.scrollHeight;
+                // Reset dropdown back to default placeholder
+                scenarioDropdown.selectedIndex = 0;
+            }
+        });
+    }
+
+    // Expand / Collapse All Accordion Dropbars
+    const expandAllBtn = document.getElementById('expand-all-btn');
+    const collapseAllBtn = document.getElementById('collapse-all-btn');
+    if (expandAllBtn && collapseAllBtn) {
+        expandAllBtn.addEventListener('click', () => {
+            document.querySelectorAll('.preset-accordion').forEach(el => el.open = true);
+        });
+        collapseAllBtn.addEventListener('click', () => {
+            document.querySelectorAll('.preset-accordion').forEach(el => el.open = false);
+        });
+    }
+
     // Clear Chat
     clearChatBtn.addEventListener('click', () => {
         chatMessages.innerHTML = '';
@@ -259,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const thresholdPill = document.createElement('span');
         thresholdPill.className = 'metric-pill';
-        thresholdPill.textContent = `&tau; = ${data.threshold_used}`;
+        thresholdPill.textContent = `τ = ${data.threshold_used}`;
 
         const latencyPill = document.createElement('span');
         latencyPill.className = 'metric-pill';
