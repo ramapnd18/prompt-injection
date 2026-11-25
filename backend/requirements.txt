@@ -1,0 +1,23 @@
+# ============================================================
+# Python Dependencies — Guardrail App
+# ============================================================
+
+# --- Web Framework ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+
+# --- ONNX Runtime (CPU) untuk inferensi model klasifikasi ---
+onnxruntime==1.20.1
+
+# --- Tokenizer dari Hugging Face (tanpa PyTorch) ---
+transformers==4.47.1
+
+# --- HTTP Client Async untuk komunikasi ke Ollama ---
+httpx==0.28.1
+
+# --- Environment Variables Loader ---
+python-dotenv==1.0.1
+
+# --- Pydantic untuk validasi data ---
+pydantic==2.10.4
+pydantic-settings==2.7.1

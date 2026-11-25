@@ -1,0 +1,95 @@
+# ============================================================
+# .gitignore — Prompt Injection Guardrail Project
+# ============================================================
+
+# --- Environment Variables ---
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# --- Python & Cache ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+
+# --- Virtual Environments ---
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# --- Jupyter Notebooks ---
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# --- Model Artifacts & Large Weights (>50MB / Binaries) ---
+# PERINGATAN: GitHub membatasi ukuran file maks 100 MB.
+# Model weights (1.1 GB safetensors / onnx) disimpan di Google Drive / lokal.
+model_artifacts/hf_model/
+*.safetensors
+*.onnx
+*.bin
+*.pt
+*.pth
+*.model
+*.spm
+model_artifacts/onnx_guardrail/*.onnx
+model_artifacts/onnx_guardrail/*.safetensors
+model_artifacts/onnx_guardrail/*.bin
+model_artifacts/onnx_guardrail/*.model
+model_artifacts/onnx_guardrail/*.spm
+model_artifacts/onnx_guardrail/tokenizer.json
+
+# --- Datasets (Jika diunduh lokal) ---
+*.csv
+*.parquet
+*.arrow
+!evaluation/error_analysis_fp_fn.csv
+
+# --- Runtime Logs ---
+logs/
+*.log
+*.jsonl
+
+# --- Docker & Persistent Volumes ---
+ollama_data/
+
+# --- IDE & Editor Artifacts ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# --- OS Generated Files ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# --- Temporary & Scratch ---
+scratch/
+tmp/
+temp/

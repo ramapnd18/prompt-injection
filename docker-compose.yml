@@ -1,0 +1,74 @@
+# ============================================================
+# Prompt Injection Guardrail — Docker Compose Orchestration
+# ============================================================
+# Jalankan: docker compose up -d
+# Akses Web Chat: http://localhost:8000
+# ============================================================
+
+services:
+  # --------------------------------------------------------
+  # Container 1: Guardrail App (FastAPI + ONNX + Web Chat UI)
+  # --------------------------------------------------------
+  guardrail-app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: guardrail-app
+    ports:
+      - "8000:8000"               # Satu-satunya port yang diekspos ke host
+    env_file:
+      - .env
+    volumes:
+      - ./backend/app:/app/app:ro                   # Hot-reload app code
+      - ./backend/static:/app/static:ro             # Hot-reload static web UI
+      - ./model_artifacts:/app/model_artifacts:ro   # Model ONNX (read-only)
+      - ./logs:/app/logs                             # Log keamanan (read-write)
+    networks:
+      - guardrail_net
+    deploy:
+      resources:
+        limits:
+          memory: 3G              # Ditingkatkan ke 3 GB agar model ONNX 1.1 GB aman dari OOM
+    depends_on:
+      ollama-service:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # --------------------------------------------------------
+  # Container 2: Ollama Service (LLM Target — Chatbot)
+  # --------------------------------------------------------
+  ollama-service:
+    image: ollama/ollama:latest
+    container_name: ollama-service
+    # TIDAK mengekspos port 11434 ke host (isolasi jaringan NFR-03)
+    # Port hanya bisa diakses via jaringan internal guardrail_net
+    networks:
+      - guardrail_net
+    volumes:
+      - ollama_data:/root/.ollama  # Persist model data agar tidak re-download
+    deploy:
+      resources:
+        limits:
+          memory: 5G              # Batas RAM: 5 GB (Total container <= 8 GB)
+    restart: unless-stopped
+
+# ============================================================
+# Jaringan Internal Tertutup (NFR-03: Isolasi Keamanan)
+# ============================================================
+networks:
+  guardrail_net:
+    driver: bridge
+    name: guardrail_net
+
+# ============================================================
+# Volume Persistent untuk Data Model Ollama
+# ============================================================
+volumes:
+  ollama_data:
+    name: ollama_model_data
